@@ -1,0 +1,61 @@
+✅ What It Means
+Data Integrity means:
+Data should be accurate, complete, and reliable.
+Data Consistency means:
+Similar data should look the same across the dataset (e.g., same team names, formats).
+
+🧠 Why It’s Important in IPL Data:
+In the IPL dataset:
+Team names may have small variations (e.g., "Rising Pune Supergiant" vs "Rising Pune Supergiants").
+Some teams no longer exist but should still be standardized.
+Missing or inconsistent data can lead to wrong groupings or misleading visualizations.
+
+✅ What You’ll Do:
+Standardize team names across all columns (team1, team2, winner, etc.).
+Remove any extra spaces, case mismatches.
+Verify that categories (like teams) are consistent and complete.
+
+🧪 Code for Data Consistency
+
+import pandas as pd
+
+# Load dataset
+matches = pd.read_csv('matches.csv')
+
+# STEP 1: Print all unique team names before cleaning
+print("Unique team names BEFORE cleaning:")
+print(matches['team1'].unique())
+
+# STEP 2: Create a dictionary to fix inconsistent names
+team_name_corrections = {
+    'Rising Pune Supergiant': 'Rising Pune Supergiants',
+    'Delhi Daredevils': 'Delhi Capitals',
+    'Kings XI Punjab': 'Punjab Kings',
+    'Deccan Chargers': 'Sunrisers Hyderabad',
+}
+
+# STEP 3: Apply corrections to all relevant columns
+for col in ['team1', 'team2', 'winner', 'toss_winner']:
+    matches[col] = matches[col].replace(team_name_corrections)
+
+# STEP 4: Trim whitespace (if any)
+for col in ['team1', 'team2', 'winner', 'toss_winner']:
+    matches[col] = matches[col].str.strip()
+
+# STEP 5: Print unique names after cleaning
+print("\nUnique team names AFTER cleaning:")
+print(matches['team1'].unique())
+
+✅ What This Code Does:
+Shows you inconsistent team names before fixing.
+Fixes known inconsistent team names across all key columns.
+Ensures you don’t accidentally group the same team as two different teams (which is a major error in analysis).
+Removes extra spaces or invisible characters.
+
+📌 Bonus Check: Consistency of Match Outcomes
+# Check if any matches have both win_by_runs and win_by_wickets > 0 (which is invalid)
+invalid_rows = matches[(matches['win_by_runs'] > 0) & (matches['win_by_wickets'] > 0)]
+print(f"\nInvalid matches (both runs & wickets > 0): {len(invalid_rows)}")
+
+# Normally this should be 0. If not, it's a data issue.
+
