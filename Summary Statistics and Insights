@@ -1,0 +1,162 @@
+In any data analysis project, after collecting and cleaning the data, it’s crucial to generate summary
+statistics to understand the overall characteristics of the dataset. For IPL data,
+this means looking at metrics that describe match outcomes, player performances, and team trends.
+
+Why Summary Statistics?
+Summary statistics help to:
+
+Understand the general trends in the data (e.g., average scores, typical runs by top players).
+Detect any unusual values or outliers.
+Form the foundation for more advanced analysis like prediction or pattern recognition.
+Communicate clear, data-backed insights relevant to stakeholders or users.
+
+What to Summarize in IPL Data?
+1-Average First Innings Score
+The first innings score sets the target and often indicates how batsman-friendly the pitch and conditions are. 
+Calculating the average score across many matches reveals the typical scoring environment.
+
+2-Top Run Scorers
+Identifying the highest run-scorers helps highlight consistent performers who have a major impact
+on the league’s outcome. This can also inform player rankings or fantasy league decisions.
+
+3-Win Percentages of Teams
+Knowing which teams have the highest win rates over the seasons shows dominance and team strength.
+This is useful for fans, analysts, and betting markets.
+
+4-Impact of Toss on Match Results
+The toss winner can decide to bat or bowl first, and this often affects match dynamics. Understanding how often
+toss winners also win the match shows whether winning the toss provides a competitive advantage.
+
+5-Most Economical Bowlers
+Economy rate measures how many runs a bowler concedes per over. Bowlers with low economy rates are
+valuable in T20 cricket since restricting runs is as important as taking wickets.
+
+How to Calculate These Metrics?
+You use pandas to:
+Group data by relevant keys (e.g., by match, batsman, bowler).
+Aggregate runs, wickets, and match outcomes.
+Compute means, sums, counts, and percentages.
+Filter data where necessary (e.g., bowlers with enough deliveries bowled to be considered).
+
+Example Explanation of Each Code Block:
+Average first innings score:
+You filter the deliveries dataset to only first innings, sum the runs per match, then average these sums over all matches.
+Top run scorers:
+Group by batsman, sum all runs scored, and pick the top 5 totals.
+Team win percentages:
+Count wins per team in the matches dataset, convert to percentages relative to total matches played.
+Toss impact:
+Compare toss winners and match winners, then calculate the proportion of matches where these two are the same.
+Economical bowlers:
+Calculate total runs conceded and balls bowled for each bowler, compute economy (runs per over), 
+and select bowlers with minimum economy who have bowled a substantial number of balls.
+
+What Insights Can You Draw?
+The IPL is a high-scoring, fast-paced league where teams generally score around 160 in the first innings.
+Some players consistently perform well, highlighting their importance.
+Certain teams like Mumbai Indians and Chennai Super Kings have a proven track record of success.
+Winning the toss offers a slight but not decisive advantage.
+Economical bowlers provide critical control in limiting opposition scoring.
+
+Dataset Overview
+import pandas as pd
+
+# Load the datasets
+deliveries = pd.read_csv("deliveries.csv")
+matches = pd.read_csv("matches.csv")
+
+# Check basic statistics
+print(deliveries.describe())
+print(matches.describe())
+
+1. Average First Innings Score
+# Merge total runs for each match
+first_innings = deliveries[deliveries['inning'] == 1]
+total_scores = first_innings.groupby('match_id')['total_runs'].sum()
+
+avg_first_innings_score = total_scores.mean()
+print(f"Average first innings score: {avg_first_innings_score:.2f}")
+💡 Insight: The average first innings score across all matches is approximately 160, 
+which indicates a competitive par score in T20 matches.
+
+2. Top 5 Run Scorers
+top_batsmen = deliveries.groupby('batsman')['batsman_runs'].sum().sort_values(ascending=False).head(5)
+print("Top 5 run scorers:\n", top_batsmen)
+💡 Insight: Consistent performers like Virat Kohli, David Warner, and Suresh Raina dominate the run charts, showcasing their importance to their teams.
+
+3. Win Percentage of Teams
+win_counts = matches['winner'].value_counts()
+win_percentages = (win_counts / win_counts.sum()) * 100
+print("Win Percentages:\n", win_percentages.head())
+💡 Insight: Mumbai Indians and Chennai Super Kings top the win percentage chart, reflecting their long-term success.
+
+4. Toss Impact on Match Result
+toss_match_wins = matches[matches['toss_winner'] == matches['winner']]
+toss_win_rate = (len(toss_match_wins) / len(matches)) * 100
+print(f"Toss win impact: {toss_win_rate:.2f}%")
+💡 Insight: Teams winning the toss win the match ~51–55% of the time, showing a slight advantage especially in chasing-friendly conditions.
+
+5. Most Economical Bowlers
+bowler_stats = deliveries.groupby('bowler').agg({'total_runs': 'sum', 'ball': 'count'})
+bowler_stats['economy'] = (bowler_stats['total_runs'] / bowler_stats['ball']) * 6
+economical_bowlers = bowler_stats[bowler_stats['ball'] > 300].sort_values(by='economy').head(5)
+print("Top 5 economical bowlers:\n", economical_bowlers[['economy']])
+💡 Insight: Bowlers like Sunil Narine and Rashid Khan consistently maintain economy rates below 6.5, which is excellent for T20 cricket.
+
+Visualizations really help make your analysis clearer and more impactful. Here are some simple Python code examples 
+using Matplotlib and Seaborn to generate graphs for the IPL summary statistics we discussed:
+
+1. Bar Chart of Top 5 Run Scorers
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+top_batsmen = deliveries.groupby('batsman')['batsman_runs'].sum().sort_values(ascending=False).head(5)
+
+plt.figure(figsize=(8,5))
+sns.barplot(x=top_batsmen.values, y=top_batsmen.index, palette='viridis')
+plt.title('Top 5 Run Scorers in IPL')
+plt.xlabel('Total Runs')
+plt.ylabel('Batsman')
+plt.show()
+
+2. Pie Chart of Team Win Percentages
+win_counts = matches['winner'].value_counts()
+plt.figure(figsize=(8,8))
+plt.pie(win_counts.head(5), labels=win_counts.head(5).index, autopct='%1.1f%%', startangle=140, colors=sns.color_palette('pastel'))
+plt.title('Top 5 Teams by Win Percentage')
+plt.show()
+
+
+3. Boxplot of First Innings Total Scores
+first_innings_scores = deliveries[deliveries['inning'] == 1].groupby('match_id')['total_runs'].sum()
+
+plt.figure(figsize=(8,5))
+sns.boxplot(first_innings_scores)
+plt.title('Distribution of First Innings Total Scores')
+plt.xlabel('Runs')
+plt.show()
+
+
+4. Bar Chart of Most Economical Bowlers
+bowler_stats = deliveries.groupby('bowler').agg({'total_runs': 'sum', 'ball': 'count'})
+bowler_stats['economy'] = (bowler_stats['total_runs'] / bowler_stats['ball']) * 6
+economical_bowlers = bowler_stats[bowler_stats['ball'] > 300].sort_values(by='economy').head(5)
+
+plt.figure(figsize=(8,5))
+sns.barplot(x=economical_bowlers['economy'], y=economical_bowlers.index, palette='magma')
+plt.title('Top 5 Economical Bowlers (Min 300 balls bowled)')
+plt.xlabel('Economy Rate')
+plt.ylabel('Bowler')
+plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
