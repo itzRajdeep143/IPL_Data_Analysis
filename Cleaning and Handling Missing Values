@@ -1,0 +1,43 @@
+In the IPL datasets, missing data can cause errors or biased analysis. 
+
+
+For example:
+The winner column may be missing when a match was abandoned or ended with no result.
+Umpire columns might have some missing entries.
+
+Handling these missing values properly ensures your analysis is accurate and meaningful.
+
+Steps:
+Detect missing values using .isnull().
+For missing winner, replace with "No Result" to keep these matches in the dataset but mark them clearly.
+For umpire info, if missing data is small and not essential, drop those rows to keep data clean.
+Confirm no missing values remain.
+
+Code Example
+import pandas as pd
+
+# Load the dataset
+matches = pd.read_csv('matches.csv')
+
+# 1. Check for missing values in the dataset
+print("Missing values before cleaning:")
+print(matches.isnull().sum())
+
+# 2. Fill missing winners with 'No Result'
+matches['winner'].fillna('No Result', inplace=True)
+
+# 3. Drop rows with missing umpire info
+matches.dropna(subset=['umpire1', 'umpire2'], inplace=True)
+
+# 4. Verify missing values after cleaning
+print("\nMissing values after cleaning:")
+print(matches.isnull().sum())
+
+
+Output you’d expect:
+Before cleaning, columns like winner, umpire1, and umpire2 have missing values.
+After cleaning, missing winner entries are replaced with "No Result".
+Rows with missing umpire data are dropped.
+This results in no missing data in critical columns for your analysis.
+
+
