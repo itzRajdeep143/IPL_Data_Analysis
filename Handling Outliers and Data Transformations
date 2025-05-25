@@ -1,0 +1,56 @@
+Outliers and skewed data can significantly affect the accuracy and reliability of analysis and predictive modeling. 
+Therefore, identifying and managing these data points is essential for robust IPL data analysis.
+
+Outlier Detection:
+Using visual methods such as boxplots to identify extreme values in features like total runs scored in an innings, strike rates, and economy rates.
+
+Applying statistical methods such as the Interquartile Range (IQR) or Z-score to detect values that deviate significantly from the norm.
+
+Handling Outliers:
+For match-level data (e.g., innings scores), extreme high or low values were carefully examined to understand if they
+represent genuine exceptional performances or data errors.
+
+In player statistics, extreme values in strike rates or economy rates were capped or winsorized to reduce their impact on models.
+
+Where appropriate, outliers were kept to preserve important cricketing events (e.g., record-breaking scores) rather than discarded outright.
+
+Data Transformations:
+Skewed distributions (like runs scored or economy rates) were transformed using logarithmic or square root transformations 
+to normalize data, improving the performance of statistical tests and models.
+
+Categorical variables such as team names, venues, and player roles were encoded into numerical formats using one-hot encoding
+
+or label encoding to be suitable for machine learning algorithms.
+
+Date and time data were converted into meaningful features such as season year, match day, or venue conditions to enhance analysis.
+
+Sample Code Snippet for Outlier Handling and Transformation:
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Detecting outliers using IQR for first innings total runs
+Q1 = first_innings_scores['total_runs'].quantile(0.25)
+Q3 = first_innings_scores['total_runs'].quantile(0.75)
+IQR = Q3 - Q1
+
+outliers = first_innings_scores[(first_innings_scores['total_runs'] < (Q1 - 1.5 * IQR)) | 
+                                (first_innings_scores['total_runs'] > (Q3 + 1.5 * IQR))]
+print(f"Number of outlier innings scores: {len(outliers)}")
+
+# Log transformation of total runs to reduce skewness
+first_innings_scores['log_total_runs'] = np.log1p(first_innings_scores['total_runs'])
+
+# Plot before and after transformation
+plt.figure(figsize=(12,5))
+
+plt.subplot(1, 2, 1)
+sns.histplot(first_innings_scores['total_runs'], bins=30, kde=True)
+plt.title('Original Total Runs Distribution')
+
+plt.subplot(1, 2, 2)
+sns.histplot(first_innings_scores['log_total_runs'], bins=30, kde=True, color='orange')
+plt.title('Log-Transformed Total Runs Distribution')
+
+plt.show()
+
