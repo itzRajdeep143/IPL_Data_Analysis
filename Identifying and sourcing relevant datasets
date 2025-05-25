@@ -1,0 +1,37 @@
+We used IPL datasets from Kaggle, which include:
+
+matches.csv: Match-level data (teams, venue, toss winner, match result, etc.)
+
+deliveries.csv: Ball-by-ball data (batsman, bowler, runs, wickets)
+
+These datasets provide comprehensive coverage from IPL 2008 to 2022, making them ideal 
+for exploring team and player performance, match outcomes, and trends across seasons.
+The foundation of any data analysis project lies in selecting the right datasets. 
+For analyzing IPL matches, you need datasets that comprehensively cover all aspects
+relevant to your goals—such as match details, ball-by-ball data, player statistics, 
+and team performances.
+
+Key steps involved:
+Understand the project objectives:
+For IPL analysis, your goal might be to study team performance trends, player statistics, match outcomes,
+or factors affecting match results.
+
+Search for reliable data sources:
+Use trusted platforms like Kaggle, official IPL websites, or cricket data repositories. Kaggle, for instance,
+hosts well-structured IPL datasets collected over many seasons.
+
+Dataset relevance and completeness:
+Choose datasets that include essential features:
+Match info: teams playing, venue, date, winner, toss winner, margin of victory.
+Ball-by-ball data: runs scored on each ball, bowler, batsman, extras, wickets.
+Player info if needed for detailed player analysis.
+
+Verify data quality:
+Preview datasets to ensure they cover multiple seasons (e.g., IPL 2008 to 2022) and have consistent, 
+structured data ready for analysis.
+
+Example:
+For this project, we sourced two main datasets from Kaggle:
+matches.csv — containing details of each IPL match, including participating teams, match result, venue, toss info, and season.
+deliveries.csv — containing ball-by-ball data, capturing every ball bowled with runs scored, extras, and wickets.
+This combination allows analysis at both the match and ball level, enabling comprehensive insights.
